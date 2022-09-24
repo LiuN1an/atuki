@@ -3,5 +3,9 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
-  return <h1 className="text-3xl font-bold cursor-progress">Home</h1>;
+  return (
+    <h1 className="w-full text-3xl font-bold cursor-progress flex justify-center p-8">
+      Atuki Home
+    </h1>
+  );
 }
