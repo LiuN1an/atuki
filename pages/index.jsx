@@ -84,9 +84,6 @@ export default function Home() {
       <div className="relative m-2 mx-36 p-4 box-border rounded-xl shadow-2xl flex justify-between items-center">
         <Button className="font-bold">Atuki</Button>
         <div className="flex flex-row gap-2">
-          <Button>连接</Button>
-          <Button>连接</Button>
-          <Button>连接</Button>
           <Button px={8}>连接</Button>
         </div>
       </div>
