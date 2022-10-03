@@ -2,8 +2,9 @@ import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import classnames from "classnames";
+import { gsap } from "gsap";
 
-const Background = ({ height = 90, gap = 8, collocation = [] }) => {
+const Background = ({ height = 360, gap = 8, collocation = [] }) => {
   const [cells, setCells] = useState([]);
   const [width, setWidth] = useState(0);
 
@@ -30,26 +31,106 @@ const Background = ({ height = 90, gap = 8, collocation = [] }) => {
     });
   }, [height, gap, collocation]);
 
+  const [w, sw] = useState(0);
+  const [h, sh] = useState(0);
+  const [lines, setLines] = useState([]);
+
+  useEffect(() => {
+    const run = (innerWidth, innerHeight) => {
+      sw(innerWidth);
+      sh(innerHeight);
+
+      const list1 = new Array(
+        Math.floor(innerWidth / (height + gap))
+      ).fill(undefined);
+      let start = height;
+      for (let index = 0; index < list1.length; index++) {
+        list1[index] = {
+          m: `${start} 0`,
+          l1: `${innerWidth} ${innerHeight - start}`,
+          l2: `${innerWidth} ${innerHeight - start + height}`,
+          l3: `${start - height} 0`,
+        };
+        start += height + gap;
+      }
+
+      const list2 = new Array(
+        Math.floor(innerWidth / (height + gap))
+      ).fill(undefined);
+      start = height;
+      for (let index = 0; index < list2.length; index++) {
+        list2[index] = {
+          m: `0 ${start}`,
+          l1: `${innerWidth - start} ${innerHeight}`,
+          l2: `${innerWidth - start + height} ${innerHeight}`,
+          l3: `0 ${start - height}`,
+        };
+        start += height + gap;
+      }
+
+      setLines(
+        [...list1.reverse(), ...list2].map((item, index) => ({
+          ...item,
+          bgColor: collocation.length
+            ? collocation[index % collocation.length]
+            : "#fff",
+        }))
+      );
+    };
+    run(window.innerWidth, window.innerHeight);
+
+    const callback = (e) => {
+      run(e.target.window.innerWidth, e.target.window.innerHeight);
+    };
+
+    window.addEventListener("resize", callback);
+    return () => {
+      window.removeEventListener("resize", callback);
+    };
+  }, [collocation, height, gap]);
+
+  //   return (
+  //     <div
+  //       className="absolute rotate-45 origin-top"
+  //       style={{ height: width, width: width }}
+  //     >
+  //       {cells.map((cell, index) => {
+  //         return cell.bgColor ? (
+  //           <div
+  //             key={index}
+  //             style={{
+  //               height: cell.height,
+  //               marginBottom: cell.gap,
+  //               width: cell.width,
+  //               backgroundColor: cell.bgColor,
+  //             }}
+  //             className="rounded-[65px]"
+  //           />
+  //         ) : null;
+  //       })}
+  //     </div>
+  //   );
+
   return (
-    <div
-      className="absolute rotate-45 origin-top"
-      style={{ height: width, width: width }}
+    <svg
+      className="absolute"
+      xmlns="http://www.w3.org/2000/svg"
+      width={w}
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      version="1.1"
     >
-      {cells.map((cell, index) => {
-        return cell.bgColor ? (
-          <div
+      {lines.map((line, index) => {
+        return (
+          <path
             key={index}
-            style={{
-              height: cell.height,
-              marginBottom: cell.gap,
-              width: cell.width,
-              backgroundColor: cell.bgColor,
-            }}
-            className="rounded-[65px]"
+            fill={line.bgColor}
+            d={`M ${line.m} L ${line.l1} L ${line.l2} L ${line.l3} z`}
+            className="cursor-pointer hover:opacity-90"
           />
-        ) : null;
+        );
       })}
-    </div>
+    </svg>
   );
 };
 
@@ -69,14 +150,14 @@ let index = 0;
 export default function Home() {
   const [collocation, setCollocation] = useState(theme[0]);
 
-  //   useEffect(() => {
-  //     const clear = setInterval(() => {
-  //       setCollocation([...theme[index++ % theme.length]]);
-  //     }, 1500);
-  //     return () => {
-  //       clearInterval(clear);
-  //     };
-  //   }, []);
+  useEffect(() => {
+    const clear = setInterval(() => {
+      setCollocation([...theme[index++ % theme.length]]);
+    }, 1500);
+    return () => {
+      clearInterval(clear);
+    };
+  }, []);
 
   return (
     <div className="h-full relative overflow-hidden">
