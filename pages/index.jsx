@@ -29,12 +29,10 @@ export default function Home() {
     }
   };
 
-  const [transform, setTransform] = useState(
-    `translate(-50%, -50%) scale(${1.5})`
-  );
+  const [transform, setTransform] = useState("translate(-50%, -50%)");
 
   return (
-    <div className="h-full">
+    <div className="h-full bg-white">
       <div
         className="w-full h-1/5 relative overflow-hidden shadow-xl"
         onClick={handleClick}
@@ -43,7 +41,9 @@ export default function Home() {
           if (e) {
             setTransform(
               `translate(-50%, -50%) scale(${
-                ((e.offsetWidth / 1000) * 600) / 400
+                isMobile
+                  ? ((e.offsetWidth / 1000) * 600) / 400
+                  : ((e.offsetWidth / 1000) * 400) / 400
               })`
             );
           }
