@@ -10,6 +10,7 @@ import {
 import { isMobile } from "react-device-detect";
 import { confetti } from "utils";
 import { gsap } from "gsap";
+import { MemoryList } from "@components";
 
 const titleBg = ["#5E86BE", "#F4C15E", "#F3AD6F", "#D66943", "#8C3429"];
 
@@ -64,6 +65,7 @@ export default function Home() {
         );
       }
     }, 1000);
+
     const counter2 = setInterval(() => {
       if (clickRef.current) {
         confetti(
@@ -125,6 +127,8 @@ export default function Home() {
     };
   }, []);
 
+  const [visible, setVisible] = useState(false);
+
   return (
     <div className="h-full bg-white">
       <div
@@ -151,6 +155,21 @@ export default function Home() {
       {/* <div className="text-[#c3c3c3] mt-4 p-2 font-thin text-xs flex items-center justify-center">
         那一定是轮回中深邃的缘分，让我在此世与你紧紧相拥
       </div> */}
+      <div
+        onClick={() => {
+          setVisible(true);
+        }}
+        className="w-24 h-12 rounded-xl bg-[#8C3429] flex items-center justify-center text-white font-bold fixed bottom-4 left-1/2 -translate-x-1/2 hover:bg-opacity-75"
+      >
+        Go
+      </div>
+      <MemoryList
+        titleBg={titleBg}
+        visible={visible}
+        onClose={() => {
+          setVisible(false);
+        }}
+      />
     </div>
   );
 }
